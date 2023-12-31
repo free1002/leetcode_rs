@@ -28,12 +28,6 @@ fn convert(num: i32) -> String {
     result_str
 }
 
-impl Solution {
-    pub fn int_to_roman(num: i32) -> String {
-        convert(num)
-    }
-}
-
 #[test]
 fn test_one() {
     assert_eq!(convert(3), "III");
