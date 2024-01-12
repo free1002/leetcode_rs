@@ -1,4 +1,3 @@
-use std::arch::aarch64::__yield;
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -60,48 +59,48 @@ pub fn create_leaf(val: i32) -> Option<Rc<RefCell<TreeNode>>> {
     create_tree_node(val, None, None)
 }
 
-
-#[test]
-fn test_traverse_generator() {
-    let root1 = create_tree_node(3,
-                                 create_tree_node(5,
-                                                  create_leaf(6),
-                                                  create_tree_node(2,
-                                                                   create_leaf(7),
-                                                                   create_leaf(4)
-                                                  )
-                                 ),
-                                 create_tree_node(1,
-                                                  create_leaf(9),
-                                                  create_leaf(8)
-                                 )
-    );
-    for i in leaf_list_generator(root1) {
-        println!("{}", i);
-    }
-}
-
-
-pub fn _traverse_leaf_list_generator(x: &RefCell<TreeNode>, out_list: &mut Vec<i32>) {
-    let xx = x.borrow();
-    println!("val: {}", xx.val);
-    if xx.left.is_none() && xx.right.is_none() {
-        __yield()
-        return;
-    }
-
-    if let Some(left) = &xx.left {
-        crate::_leaf_list(left.as_ref(), out_list);
-    }
-    if let Some(right) = &xx.right {
-        crate::_leaf_list(right.as_ref(), out_list);
-    }
-}
+//
+// #[test]
+// fn test_traverse_generator() {
+//     let root1 = create_tree_node(3,
+//                                  create_tree_node(5,
+//                                                   create_leaf(6),
+//                                                   create_tree_node(2,
+//                                                                    create_leaf(7),
+//                                                                    create_leaf(4)
+//                                                   )
+//                                  ),
+//                                  create_tree_node(1,
+//                                                   create_leaf(9),
+//                                                   create_leaf(8)
+//                                  )
+//     );
+//     for i in leaf_list_generator(root1) {
+//         println!("{}", i);
+//     }
+// }
 
 
-fn leaf_list_generator(p0: Option<Rc<RefCell<TreeNode>>>) -> _ {
+// pub fn _traverse_leaf_list_generator(x: &RefCell<TreeNode>, out_list: &mut Vec<i32>) {
+//     let xx = x.borrow();
+//     println!("val: {}", xx.val);
+//     if xx.left.is_none() && xx.right.is_none() {
+//         __yield()
+//         return;
+//     }
+//
+//     if let Some(left) = &xx.left {
+//         crate::_leaf_list(left.as_ref(), out_list);
+//     }
+//     if let Some(right) = &xx.right {
+//         crate::_leaf_list(right.as_ref(), out_list);
+//     }
+// }
 
-}
+
+// fn leaf_list_generator(p0: Option<Rc<RefCell<TreeNode>>>) -> _ {
+//
+// }
 
 
 #[test]
