@@ -1,4 +1,4 @@
-pub fn min_falling_path_sum(matrix: Vec<Vec<i32>>) -> i32 {
+pub fn min_falling_path_sum_1(matrix: Vec<Vec<i32>>) -> i32 {
     let mut m = create_sum_matrix(matrix);
     for i in (0..m.len()).rev() {
         update_sum_tree(&mut m, i);
@@ -13,11 +13,13 @@ pub fn min_falling_path_sum(matrix: Vec<Vec<i32>>) -> i32 {
     min_value
 }
 
-
-#[test]
-fn test_one() {
-
+pub fn min_falling_path_sum(mut matrix: Vec<Vec<i32>>) -> i32 {
+    for i in (0..matrix.len()).rev() {
+        update_sum_tree_inplace(&mut matrix, i);
+    }
+    matrix[0].iter().fold(i32::MAX, |acc, e| acc.min(*e))
 }
+
 
 fn create_sum_matrix(matrix: Vec<Vec<i32>>) -> Vec<Vec<(i32, i32)>> {
     let mut result: Vec<Vec<(i32, i32)>> = Vec::new();
@@ -35,6 +37,14 @@ fn update_sum_tree(m: &mut Vec<Vec<(i32, i32)>>, row_idx: usize) {
     }
 }
 
+
+fn update_sum_tree_inplace(m: &mut Vec<Vec<i32>>, row_idx: usize) {
+    for col_idx in 0..m[row_idx].len() {
+        m[row_idx][col_idx] += find_min_child_inplace(m, row_idx, col_idx);
+    }
+}
+
+
 fn find_min_child(m: &Vec<Vec<(i32, i32)>>, row_idx: usize, col_idx: usize) -> i32 {
     let child_row_idx = row_idx + 1;
     if child_row_idx >= m.len() {
@@ -44,7 +54,7 @@ fn find_min_child(m: &Vec<Vec<(i32, i32)>>, row_idx: usize, col_idx: usize) -> i
     let col_start = if col_idx > 0 { col_idx-1 } else { 0 };
 
     for i in col_start..col_idx+2 {
-        if i < 0 || i >= m[row_idx].len() {
+        if i >= m[row_idx].len() {
             continue;
         }
 
@@ -55,6 +65,58 @@ fn find_min_child(m: &Vec<Vec<(i32, i32)>>, row_idx: usize, col_idx: usize) -> i
 
     min_value
 }
+
+fn find_min_child_inplace(m: &Vec<Vec<i32>>, row_idx: usize, col_idx: usize) -> i32 {
+    let child_row_idx = row_idx + 1;
+    if child_row_idx >= m.len() {
+        return 0;
+    }
+    let last_idx = m[child_row_idx].len() - 1;
+
+    if col_idx == 0 {
+        return m[child_row_idx][0].min(m[child_row_idx][1]);
+    } else if col_idx == last_idx {
+        return m[child_row_idx][last_idx-1].min(m[child_row_idx][last_idx]);
+    }
+
+    m[child_row_idx][col_idx-1].min(
+        m[child_row_idx][col_idx]).min(
+        m[child_row_idx][col_idx+1])
+}
+
+#[test]
+fn test_one() {
+    let matrix = vec![
+        vec![2, 1, 3],
+        vec![6, 5, 4],
+        vec![7, 8, 9],
+    ];
+    assert_eq!(min_falling_path_sum(matrix), 13);
+
+    let matrix = vec![
+        vec![-19, 57],
+        vec![-40, -5],
+    ];
+    assert_eq!(min_falling_path_sum(matrix), -59);
+}
+
+#[test]
+fn test_two() {
+    let matrix = vec![
+        vec![-80, -13, 22],  // -66
+        vec![83, 94, -5],  // -53
+        vec![73, -48, 61],
+    ];
+
+    /*
+        [[-45, 22, -31],
+          [35, 46, -53],
+          [73, -48, 61]]
+
+     */
+    assert_eq!(min_falling_path_sum(matrix), -66);
+}
+
 
 #[test]
 fn test_path_sum_tree() {
@@ -97,3 +159,4 @@ fn test_path_sum2() {
     assert_eq!(m[0][1], (1, 12));
     assert_eq!(m[0][2], (3, 12));
 }
+
