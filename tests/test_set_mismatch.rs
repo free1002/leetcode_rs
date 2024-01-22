@@ -11,6 +11,9 @@ pub fn find_error_nums(mut nums: Vec<i32>) -> Vec<i32> {
         } else if nums_table[i] == 1 {
             dup = i as i32 + 1;
         }
+        if missed != -1 && dup != -1 {
+            return vec![dup, missed]
+        }
     }
     vec![dup, missed]
 }
